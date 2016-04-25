@@ -123,6 +123,9 @@
 
 ;; C/C++
 
+;; GLSL
+(el-get-bundle glsl-mode)
+
 ;; LISP
 ;; CommonLisp
 (el-get-bundle slime)
@@ -208,6 +211,14 @@
   (setq c-basic-offset 4))
 (add-hook 'c-mode-hook 'c-c++-mode-init)
 (add-hook 'c++-mode-hook 'c-c++-mode-init)
+
+;;---------------------------
+;; GLSL
+;;---------------------------
+(add-to-list 'auto-mode-alist '("\\.vsh\\'" . glsl-mode))
+(add-to-list 'auto-mode-alist '("\\.fsh\\'" . glsl-mode))
+(add-to-list 'auto-mode-alist '("\\.vertex\\'" . glsl-mode))
+(add-to-list 'auto-mode-alist '("\\.fragment\\'" . glsl-mode))
 
 
 ;;---------------------------
