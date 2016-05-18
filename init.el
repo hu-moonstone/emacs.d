@@ -96,6 +96,9 @@
     (eval-print-last-sexp)))
 
 
+;; Shell
+(el-get-bundle 'multi-term)
+
 ;; emacs-w3m
 (el-get-bundle 'w3m)
 
