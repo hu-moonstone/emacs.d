@@ -146,6 +146,10 @@
 (el-get-bundle 'projectile)
 (el-get-bundle 'projectile-rails)
 
+;; Inf-ruby (Pry)
+(el-get-bundle 'inf-ruby)
+(setq inf-ruby-default-implementation "pry")
+(setq inf-ruby-eval-binding "Pry.toplevel_binding")
 
 ;; Coffee
 (el-get-bundle 'coffee-mode)
@@ -308,6 +312,7 @@
                              ;(setq flycheck-checker 'ruby-rubocop)
                              ;(flycheck-mode 1)))
 (add-hook 'ruby-mode-hook 'flymake-ruby-load)
+(add-hook 'inf-ruby-mode-hook 'ansi-color-for-commit-mode-on)
 
 
 (require 'coffee-mode)
