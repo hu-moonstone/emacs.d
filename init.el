@@ -1,5 +1,6 @@
 ;;; init.el --- Emacs Settings
 
+;;; Code:
 
 (set-language-environment "Japanese")
 (set-terminal-coding-system 'utf-8)
@@ -10,7 +11,7 @@
 (prefer-coding-system 'utf-8)
 
 ;; フォント設定
-(add-to-list 'default-frame-alist '(font . "ricty-16"))
+(add-to-list 'default-frame-alist '(font . "ricty-12"))
 
 ;; スタートアップメッセージ非表示
 (setq inhibit-startup-message t)
@@ -94,81 +95,99 @@
     (goto-char (point-max))
     (eval-print-last-sexp)))
 
-;; ensime, magit, markdown-mode, markdown-preview-mode, w3m, scala-mode2
-(el-get-bundle auto-complete)
-(el-get-bundle undo-tree)
+
+;; emacs-w3m
+(el-get-bundle 'w3m)
+
+(el-get-bundle 'auto-complete)
+(el-get-bundle 'undo-tree)
 ;; (el-get-bundle evil) ;; VIモード
 
-(el-get-bundle flycheck)
-(el-get-bundle helm)
-(el-get-bundle helm-ag)
-(el-get-bundle helm-ls-git)
+(el-get-bundle 'flycheck)
+(el-get-bundle 'helm)
+(el-get-bundle 'helm-ag)
+(el-get-bundle 'helm-ls-git)
 
 ;; GIT
-(el-get-bundle magit) ;; GITクライアント
-(el-get-bundle git-gutter+) ;; 変更箇所マーク
-(el-get-bundle gitconfig-mode)
-(el-get-bundle gitignore-mode)
+(el-get-bundle 'magit) ;; GITクライアント
+(el-get-bundle 'git-gutter+) ;; 変更箇所マーク
+(el-get-bundle 'gitconfig-mode)
+(el-get-bundle 'gitignore-mode)
 
 ;; OTHER
-(el-get-bundle pkg-info)
-(el-get-bundle rainbow-delimiters)
-(el-get-bundle move-text)
+(el-get-bundle 'pkg-info)
+(el-get-bundle 'rainbow-delimiters)
+(el-get-bundle 'move-text)
 
 ;; SCALA
-(el-get-bundle scala-mode2)
-(el-get-bundle ensime)
-(require 'ensime)
+(el-get-bundle 'scala-mode2)
+(el-get-bundle 'ensime)
+
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 ;; C/C++
 
 ;; GLSL
-(el-get-bundle glsl-mode)
+(el-get-bundle 'glsl-mode)
 
 ;; LISP
 ;; CommonLisp
-(el-get-bundle slime)
+(el-get-bundle 'slime)
 
 ;; Ruby
+(el-get-bundle 'flymake-ruby)
+(el-get-bundle 'motion-mode)
 ;; rubyシンタックスハイライト
-(el-get-bundle ruby-mode)
+(el-get-bundle 'ruby-mode)
 ;; 括弧、do-endの自動補完
-(el-get-bundle ruby-electric)
+(el-get-bundle 'ruby-electric)
 ;; 対応するブロックのハイライト
-(el-get-bundle ruby-block)
+(el-get-bundle 'ruby-block)
+(el-get-bundle 'projectile)
+(el-get-bundle 'projectile-rails)
+
+
+;; Coffee
+(el-get-bundle 'coffee-mode)
+
+
+;; Slim
+(el-get-bundle 'slim-mode)
+
+;; Yaml
+(el-get-bundle 'yaml-mode)
 
 
 ;; PHP
-(el-get-bundle php-mode)
-(el-get-bundle php-completion)
+(el-get-bundle 'php-mode)
+(el-get-bundle 'php-completion)
 
 ;; Java
 
 
-;; JS
-(el-get-bundle js2-mode)
+;; JavaScript
+(el-get-bundle 'js2-mode)
 
 ;; TypeScript
-(el-get-bundle typescript-mode)
+(el-get-bundle 'typescript-mode)
 ;; tsserverと連携する拡張
-(el-get-bundle tide)
-(el-get-bundle company)
+(el-get-bundle 'tide)
+(el-get-bundle 'company)
 
 
 
 ;; Markdown
-(el-get-bundle markdown-mode)
-(el-get-bundle markdown-preview-mode)
+(el-get-bundle 'markdown-mode)
+(el-get-bundle 'markdown-preview-mode)
 
 ;; HTMLとその他の言語の混合
-(el-get-bundle web-mode)
+(el-get-bundle 'web-mode)
 
 
 ;; Theme
-(el-get-bundle monochrome-theme)
-(add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/monochrome-theme")
-(load-theme 'monochrome t)
+;(el-get-bundle monochrome-theme)
+;(add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/monochrome-theme")
+;(load-theme 'monochrome t)
 ;; (el-get-bundle borland-blue-theme)
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/borland-blue-theme")
 ;; (load-theme 'borland-blue t)
@@ -178,9 +197,19 @@
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/zenburn-theme")
 ;; (load-theme 'zenburn t)
 
-;; (el-get-bundle solarized-theme)
-;; (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/solarized-theme")
-;; (load-theme 'solarized-dark t)
+(el-get-bundle 'solarized-theme)
+(add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/solarized-theme")
+(load-theme 'solarized-dark t)
+
+(require 'projectile)
+(projectile-global-mode)
+(setq projectile-completion-system 'helm)
+
+;; flycheckを有効に
+(require 'flycheck)
+;(global-flycheck-mode)
+;(setq flycheck-check-syntax-automatically '(mode-enabled save))
+
 
 
 ;;---------------------------
@@ -233,17 +262,26 @@
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
 
+(require 'web-mode)
+(setq web-mode-content-types-alist '(("jsx" . ".*\\.tsx?")))
+
 (require 'tide)
 (add-hook 'typescript-mode-hook (lambda ()
                                   (tide-setup)
                                   (flycheck-mode t)
                                   (setq flycheck-check-syntax-automatically)
                                   (eldoc-mode t)
-                                  (companpy-mode-on)))
+                                  (company-mode t)))
+
+;;---------------------------
+;; JavaScript
+;;---------------------------
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-jsx-mode))
+(flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
+(add-hook 'js2-jsx-mode-hook 'flycheck-mode)
 
 
-;; flycheckを有効に
-(global-flycheck-mode)
 
 ;;---------------------------
 ;; Ruby用の拡張ロードと設定
@@ -266,9 +304,25 @@
                              (setq tab-width 2)
                              (setq ruby-indent-level 2)
                              (setq ruby-indent-tabs-mode nil)
-                             (setq ruby-deep-indent-paren-style nil)
-                             (setq flycheck-checker 'ruby-rubocop)
-                             (flycheck-mode 1)))
+                             (setq ruby-deep-indent-paren-style nil)))
+                             ;(setq flycheck-checker 'ruby-rubocop)
+                             ;(flycheck-mode 1)))
+(add-hook 'ruby-mode-hook 'flymake-ruby-load)
+
+
+(require 'coffee-mode)
+(add-to-list 'auto-mode-alist '("\\.coffee?\\'" . coffee-mode))
+
+(require 'slim-mode)
+(add-to-list 'auto-mode-alist '("\\.slim?\\'" . slim-mode))
+
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yaml?\\'" . yaml-mode))
+
+
+(require 'projectile-rails)
+(add-hook 'projectile-mode-hook 'projectile-rails-on)
+
 
 ;;---------------------------
 ;; Python
@@ -283,8 +337,8 @@
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
 
 
-;; 空白の表示、タブの表示
-(setq whitespace-style '(face trailing tabs space-mark tab-mark))
+;; タブの表示
+(setq whitespace-style '(face trailing tabs tab-mark))
 (setq whitespate-display-mappings
       '((tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
 (require 'whitespace)
