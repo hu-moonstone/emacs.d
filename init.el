@@ -1,5 +1,5 @@
-;;; init.el --- Emacs Settings
-
+;;; init.el -- Emacs Settings
+;;; Commentary:
 ;;; Code:
 
 (set-language-environment "Japanese")
@@ -29,7 +29,10 @@
 (setq eol-mnemonic-unix "(LF)")
 
 ;; メニュー非表示
-(menu-bar-mode -1)
+(menu-bar-mode 0)
+
+;; ツールバー非表示
+(tool-bar-mode 0)
 
 ;; 列番号表示
 (column-number-mode t)
@@ -106,7 +109,7 @@
 (el-get-bundle 'undo-tree)
 ;; (el-get-bundle evil) ;; VIモード
 
-(el-get-bundle 'flycheck)
+;(el-get-bundle 'flycheck)
 (el-get-bundle 'helm)
 (el-get-bundle 'helm-ag)
 (el-get-bundle 'helm-ls-git)
@@ -140,9 +143,9 @@
 ;; Ruby
 (el-get-bundle 'flymake-ruby)
 (el-get-bundle 'motion-mode)
-;; rubyシンタックスハイライト
+; rubyシンタックスハイライト
 (el-get-bundle 'ruby-mode)
-;; 括弧、do-endの自動補完
+; 括弧、do-endの自動補完
 (el-get-bundle 'ruby-electric)
 ;; 対応するブロックのハイライト
 (el-get-bundle 'ruby-block)
@@ -175,6 +178,9 @@
 ;; JavaScript
 (el-get-bundle 'js2-mode)
 
+;; JSON
+(el-get-bundle 'json-mode)
+
 ;; TypeScript
 (el-get-bundle 'typescript-mode)
 ;; tsserverと連携する拡張
@@ -200,13 +206,13 @@
 ;; (load-theme 'borland-blue t)
 
 ;; (load-theme 'wombat t)
-;; (el-get-bundle zenburn-theme)
-;; (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/zenburn-theme")
-;; (load-theme 'zenburn t)
+(el-get-bundle zenburn-theme)
+(add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/zenburn-theme")
+(load-theme 'zenburn t)
 
-(el-get-bundle 'solarized-theme)
-(add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/solarized-theme")
-(load-theme 'solarized-dark t)
+;; (el-get-bundle 'solarized-theme)
+;; (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/solarized-theme")
+;; (load-theme 'solarized-dark t)
 
 (require 'projectile)
 (projectile-global-mode)
@@ -214,8 +220,8 @@
 
 ;; flycheckを有効に
 (require 'flycheck)
-;(global-flycheck-mode)
-;(setq flycheck-check-syntax-automatically '(mode-enabled save))
+(global-flycheck-mode)
+(setq flycheck-check-syntax-automatically '(mode-enabled save))
 
 
 
@@ -256,7 +262,6 @@
 (add-to-list 'auto-mode-alist '("\\.vertex\\'" . glsl-mode))
 (add-to-list 'auto-mode-alist '("\\.fragment\\'" . glsl-mode))
 
-
 ;;---------------------------
 ;; PHP
 ;;---------------------------
@@ -269,9 +274,6 @@
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
 
-(require 'web-mode)
-(setq web-mode-content-types-alist '(("jsx" . ".*\\.tsx?")))
-
 (require 'tide)
 (add-hook 'typescript-mode-hook (lambda ()
                                   (tide-setup)
@@ -280,20 +282,42 @@
                                   (eldoc-mode t)
                                   (company-mode t)))
 
+
+(require 'web-mode)
+(setq web-mode-content-types-alist '(("jsx" . ".*\\.tsx?")))
+
 ;;---------------------------
 ;; JavaScript
 ;;---------------------------
 (require 'js2-mode)
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-jsx-mode))
+(add-to-list 'auto-mode-alist '("\\.js$'" . js2-mode))
+(flycheck-add-mode 'javascript-eslint 'js2-mode)
+
+(add-to-list 'auto-mode-alist '("\\.jsx$'" . js2-jsx-mode))
 (flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
-(add-hook 'js2-jsx-mode-hook 'flycheck-mode)
+
+(add-hook 'js2-mode-hook '(lambda ()
+                            (setq js2-basic-offset 2)
+                            (setq indent-tabs-mode nil)
+                            (flycheck-mode 1)))
+(add-hook 'js2-jsx-mode-hook '(lambda ()
+                               (flycheck-mode 1)))
 
 
+;;---------------------------
+;; JSON
+;;---------------------------
+(require 'json-mode)
+(add-to-list 'auto-mode-alist '("\\.json$'" . json-mode))
+(add-hook 'json-mode-hook '(lambda ()
+                             (make-local-variable 'js-indent-level)
+                             (setq js-indent-level 2)))
 
 ;;---------------------------
 ;; Ruby用の拡張ロードと設定
 ;;---------------------------
 (require 'ruby-mode)
+(setq ruby-insert-encoding-magic-comment nil)
 (add-to-list 'auto-mode-alist '("\\.rb$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
@@ -311,10 +335,11 @@
                              (setq tab-width 2)
                              (setq ruby-indent-level 2)
                              (setq ruby-indent-tabs-mode nil)
+                             (setq ruby-deep-indent-paren-style nil)
+                             (setq flycheck-checker 'ruby-rubocop)
+                             (flycheck-mode 1)
                              (setq ruby-deep-indent-paren-style nil)))
-                             ;(setq flycheck-checker 'ruby-rubocop)
-                             ;(flycheck-mode 1)))
-(add-hook 'ruby-mode-hook 'flymake-ruby-load)
+;; (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 (add-hook 'inf-ruby-mode-hook 'ansi-color-for-commit-mode-on)
 
 
@@ -352,12 +377,11 @@
 (require 'whitespace)
 (global-whitespace-mode 1)
 
-
-
 ;; diredでoを入力した際、そのファイルをgnomeオープンする
 (add-hook 'dired-load-hook
           (function (lambda ()
                       (define-key dired-mode-map "o" 'dired-open-file))))
+
 (defun dired-open-file ()
   "In dired, open the file named on this line."
   (interactive)
@@ -367,6 +391,5 @@
     (message "Opening %s done" file)))
 
 
-
-
-
+(provide 'init)
+;;; init.el ends here
