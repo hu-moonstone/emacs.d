@@ -54,6 +54,8 @@
 
 ;; バックアップファイル無効
 (setq make-backup-files nil)
+(setq auto-save-list-file-prefix nil)
+(setq create-lockfiles nil)
 
 ;; オートセーブ無効
 (setq auto-save-default nil)
@@ -284,7 +286,14 @@
 
 
 (require 'web-mode)
-(setq web-mode-content-types-alist '(("jsx" . ".*\\.tsx?")))
+(defun web-mode-hook ()
+  "Hooks for web mode"
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 4))
+
+(add-hook 'web-mode-hook 'web-mode-hook)
+;; (setq web-mode-content-types-alist '(("jsx" . ".*\\.tsx?")))
 
 ;;---------------------------
 ;; JavaScript
@@ -351,7 +360,6 @@
 
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yaml?\\'" . yaml-mode))
-
 
 (require 'projectile-rails)
 (add-hook 'projectile-mode-hook 'projectile-rails-on)
