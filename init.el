@@ -20,8 +20,9 @@
 (global-set-key "\C-h" 'delete-backward-char)
 (global-set-key "\C-ch" 'help-command)
 
-;; Tab
-(setq-default tab-width 4 indent-tabs-mode nil)
+;; Tab: 全バッファーに対して
+;; (setq default-tab-width 2)
+(setq-default tab-width 2 indent-tabs-mode nil)
 
 ;; 改行コード表示
 (setq eol-mnemonic-dos "(CRLF)")
@@ -47,10 +48,10 @@
 (show-paren-mode 1)
 
 ;; カッコのハイライトの色設定
-(setq show-paren-delay 0.2)
+(setq show-paren-delay 1)
 (setq show-paren-style 'expression)
-(set-face-background 'show-paren-match-face "gray")
-(set-face-foreground 'show-paren-match-face "black")
+(set-face-background 'show-paren-match-face "black")
+(set-face-foreground 'show-paren-match-face "white")
 
 ;; バックアップファイル無効
 (setq make-backup-files nil)
@@ -60,6 +61,10 @@
 ;; オートセーブ無効
 (setq auto-save-default nil)
 
+;; 末尾スペース処理
+(setq-default show-trailing-whitespace t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
 ;; ファイル名補完で大文字小文字の区別をなくす
 (setq completion-ignore-case t)
 
@@ -67,7 +72,17 @@
 (global-auto-revert-mode 1)
 
 ;; 現在の行をハイライト
-(global-hl-line-mode t)
+;; (global-hl-line-mode t) ;; 重いのでコメントアウト
+
+;; 遅延行ハイライト
+(require 'hl-line)
+(defun global-hl-line-timer-function()
+  (global-hl-line-unhighlight-all)
+  (let ((global-hl-line-mode t))
+    (global-hl-line-highlight)))
+(setq global-hl-line-timer
+      (run-with-idle-timer 0.1 t 'global-hl-line-timer-function))
+
 
 ;; モードラインに列番号表示
 (column-number-mode 1)
@@ -100,9 +115,11 @@
     (goto-char (point-max))
     (eval-print-last-sexp)))
 
-
 ;; Shell
 (el-get-bundle 'multi-term)
+
+;; (el-get-bundle 'smooth-scroll)
+;; (smooth-scroll-mode t)
 
 ;; emacs-w3m
 (el-get-bundle 'w3m)
@@ -111,7 +128,7 @@
 (el-get-bundle 'undo-tree)
 ;; (el-get-bundle evil) ;; VIモード
 
-;(el-get-bundle 'flycheck)
+;; (el-get-bundle 'flycheck)
 (el-get-bundle 'helm)
 (el-get-bundle 'helm-ag)
 (el-get-bundle 'helm-ls-git)
@@ -130,7 +147,6 @@
 ;; SCALA
 (el-get-bundle 'scala-mode2)
 (el-get-bundle 'ensime)
-
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 ;; C/C++
@@ -145,9 +161,9 @@
 ;; Ruby
 (el-get-bundle 'flymake-ruby)
 (el-get-bundle 'motion-mode)
-; rubyシンタックスハイライト
+                                        ; rubyシンタックスハイライト
 (el-get-bundle 'ruby-mode)
-; 括弧、do-endの自動補完
+                                        ; 括弧、do-endの自動補完
 (el-get-bundle 'ruby-electric)
 ;; 対応するブロックのハイライト
 (el-get-bundle 'ruby-block)
@@ -162,13 +178,14 @@
 ;; Coffee
 (el-get-bundle 'coffee-mode)
 
-
 ;; Slim
 (el-get-bundle 'slim-mode)
+;; pug-mode
+(el-get-bundle 'pug-mode)
+(require 'pug-mode)
 
 ;; Yaml
 (el-get-bundle 'yaml-mode)
-
 
 ;; PHP
 (el-get-bundle 'php-mode)
@@ -179,17 +196,19 @@
 
 ;; JavaScript
 (el-get-bundle 'js2-mode)
+;;(el-get-bundle alanmimms/pegjs-mode) ;; うごかん。。
 
 ;; JSON
 (el-get-bundle 'json-mode)
 
 ;; TypeScript
 (el-get-bundle 'typescript-mode)
-;; tsserverと連携する拡張
+;; tsserverと連携
 (el-get-bundle 'tide)
 (el-get-bundle 'company)
 
-
+;; Clojure
+(el-get-bundle 'clojure-mode)
 
 ;; Markdown
 (el-get-bundle 'markdown-mode)
@@ -198,23 +217,46 @@
 ;; HTMLとその他の言語の混合
 (el-get-bundle 'web-mode)
 
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.ejs$" . web-mode))
+
+(defun web-mode-hook ()
+  "Hooks for web mode"
+  (setq tab-width 2)
+  (setq web-mode-html-offset 4)
+  (setq web-mode-css-offset 4)
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2))
+
+(add-hook 'web-mode-hook 'web-mode-hook)
 
 ;; Theme
-;(el-get-bundle monochrome-theme)
-;(add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/monochrome-theme")
-;(load-theme 'monochrome t)
+
+;; # Monochrome
+;; (el-get-bundle monochrome-theme)
+;; (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/monochrome-theme")
+;; (load-theme 'monochrome t)
+
+;; # Borland Blue Theme
 ;; (el-get-bundle borland-blue-theme)
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/borland-blue-theme")
 ;; (load-theme 'borland-blue t)
 
-;; (load-theme 'wombat t)
+;; # Wombat
+;;(load-theme 'wombat t)
+
+;; # Zenburn Theme
 (el-get-bundle zenburn-theme)
 (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/zenburn-theme")
 (load-theme 'zenburn t)
 
+;; # Solarized
 ;; (el-get-bundle 'solarized-theme)
 ;; (add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/solarized-theme")
 ;; (load-theme 'solarized-dark t)
+
+(set-face-background 'default' "#090960")
 
 (require 'projectile)
 (projectile-global-mode)
@@ -225,11 +267,12 @@
 (global-flycheck-mode)
 (setq flycheck-check-syntax-automatically '(mode-enabled save))
 
-
-
 ;;---------------------------
 ;; LISP
 ;;---------------------------
+(add-to-list 'auto-mode-alist '("\\.ls$" . lisp-mode))
+(add-to-list 'auto-mode-alist '("\\.lisp$" . lisp-mode))
+
 ;; Auto complete
 (add-hook 'emacs-lisp-mode-hook '(lambda ()
                                    (setq indent-tabs-mode nil)
@@ -252,7 +295,7 @@
 ;; C/C++
 ;;---------------------------
 (defun c-c++-mode-init ()
-  (setq c-basic-offset 4))
+  (setq c-set-style "gnu"))
 (add-hook 'c-mode-hook 'c-c++-mode-init)
 (add-hook 'c++-mode-hook 'c-c++-mode-init)
 
@@ -267,6 +310,10 @@
 ;;---------------------------
 ;; PHP
 ;;---------------------------
+(add-hook 'php-mode-hook '(lambda ()
+                            (setq tab-width 4)
+                            (setq c-basic-offset 4)
+                            (setq indent-tabs-mode nil)))
 (add-to-list 'auto-mode-alist '("\\.ctp\\'" . php-mode))
 
 ;;---------------------------
@@ -285,33 +332,44 @@
                                   (company-mode t)))
 
 
-(require 'web-mode)
-(defun web-mode-hook ()
-  "Hooks for web mode"
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 4))
 
-(add-hook 'web-mode-hook 'web-mode-hook)
 ;; (setq web-mode-content-types-alist '(("jsx" . ".*\\.tsx?")))
 
 ;;---------------------------
 ;; JavaScript
 ;;---------------------------
 (require 'js2-mode)
-(add-to-list 'auto-mode-alist '("\\.js$'" . js2-mode))
-(flycheck-add-mode 'javascript-eslint 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
-(add-to-list 'auto-mode-alist '("\\.jsx$'" . js2-jsx-mode))
-(flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
+(add-to-list 'auto-mode-alist '("\\.pegjs$" . js2-mode))
+
+;; (flycheck-add-mode 'javascript-eslint 'js2-mode)
+;; (add-to-list 'auto-mode-alist '("\\.jsx$'" . js2-jsx-mode))
 
 (add-hook 'js2-mode-hook '(lambda ()
+                            (setq tab-width 2)
                             (setq js2-basic-offset 2)
                             (setq indent-tabs-mode nil)
                             (flycheck-mode 1)))
-(add-hook 'js2-jsx-mode-hook '(lambda ()
-                               (flycheck-mode 1)))
 
+(add-hook 'js2-jsx-mode-hook '(lambda ()
+                                (flycheck-mode 1)))
+
+(eval-after-load 'flycheck '(custom-set-variables
+                             '(flycheck-disabled-checkers '(javascript-jshint javascript-jscs))))
+(flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
+
+(setq js2-include-browser-externs nil)
+(setq js2-mode-show-parse-errors nil)
+(setq js2-mode-show-strict-warnings nil)
+(setq js2-highlight-external-variables nil)
+(setq js2-include-jslint-globals nil)
+
+(add-hook 'web-mode-hook
+          (lambda ()
+            (when (equal web-mode-content-type "jsx")
+              (flycheck-add-mode 'javascript-eslint 'web-mode)
+              (flycheck-mode))))
 
 ;;---------------------------
 ;; JSON
@@ -319,6 +377,7 @@
 (require 'json-mode)
 (add-to-list 'auto-mode-alist '("\\.json$'" . json-mode))
 (add-hook 'json-mode-hook '(lambda ()
+                             (setq tab-width 2)
                              (make-local-variable 'js-indent-level)
                              (setq js-indent-level 2)))
 
@@ -351,7 +410,6 @@
 ;; (add-hook 'ruby-mode-hook 'flymake-ruby-load)
 (add-hook 'inf-ruby-mode-hook 'ansi-color-for-commit-mode-on)
 
-
 (require 'coffee-mode)
 (add-to-list 'auto-mode-alist '("\\.coffee?\\'" . coffee-mode))
 
@@ -364,19 +422,16 @@
 (require 'projectile-rails)
 (add-hook 'projectile-mode-hook 'projectile-rails-on)
 
-
 ;;---------------------------
 ;; Python
 ;;---------------------------
 (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
-
 
 ;;---------------------------
 ;; Markdown Setting
 ;;---------------------------
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-
 
 ;; タブの表示
 (setq whitespace-style '(face trailing tabs tab-mark))
@@ -397,7 +452,6 @@
     (message "Opening %s..." file)
     (call-process "gnome-open" nil 0 nil file)
     (message "Opening %s done" file)))
-
 
 (provide 'init)
 ;;; init.el ends here
