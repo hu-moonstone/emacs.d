@@ -12,6 +12,7 @@
 
 ;; フォント設定
 (add-to-list 'default-frame-alist '(font . "ricty-12"))
+;; (add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono-11"))
 
 ;; スタートアップメッセージ非表示
 (setq inhibit-startup-message t)
@@ -22,7 +23,7 @@
 
 ;; Tab: 全バッファーに対して
 ;; (setq default-tab-width 2)
-(setq-default tab-width 2 indent-tabs-mode nil)
+(setq-default tab-width 4 indent-tabs-mode nil)
 
 ;; 改行コード表示
 (setq eol-mnemonic-dos "(CRLF)")
@@ -121,6 +122,55 @@
 ;; (el-get-bundle 'smooth-scroll)
 ;; (smooth-scroll-mode t)
 
+;; elfeed
+(el-get-bundle 'elfeed)
+
+(global-set-key (kbd "C-x w") 'elfeed)
+(setq elfeed-feeds
+      '(;; Security
+        ("http://vrda.jpcert.or.jp/feed/ja/atom.xml") ;; VRDA Security
+        ("http://jvndb.jvn.jp/ja/rss/jvndb_new.rdf") ;; JVNDB Security
+        ;; Linux, Debian, Free Software Foundation
+        ("https://www.debian.org/News/news")
+        ("https://www.debian.org/security/dsa")
+        ("https://static.fsf.org/fsforg/rss/news.xml")
+        ("https://static.fsf.org/fsforg/rss/blogs.xml")
+        ("https://www.linux.com/feeds/news/rss")
+        ("https://www.w3.org/blog/news/feed")
+        ;; Tech
+        ("https://thinkit.co.jp/rss.xml") ;; ThinkIT
+        ("http://postd.cc/feed/") ;; PostD
+        ("https://codeiq.jp/magazine/feed/") ;; CodeIQ
+        ("http://rss.rssad.jp/rss/codezine/new/20/index.xml") ;; Codezine
+        ("https://geechs-magazine.com/feed") ;; Geechs
+        ("http://uxmilk.jp/feed") ;;Uxmilk
+        ("http://jp.techcrunch.com/feed/") ;; Techcrunch
+        ("http://www.seleqt.net/feed/") ;; Seleqt
+        ("http://feeds.feedburner.com/WebmasterCentral?format=xml") ;; Google Web-Master Official Blog
+        ("https://blogs.msdn.microsoft.com/bingdevcenter/feed/") ;; Bing Developer Blog
+        ("https://hacks.mozilla.org/feed/") ;; Mozilla Hacks
+        ("http://wired.jp/rssfeeder/") ;; Wired
+        ("https://liginc.co.jp/feed") ;; LIG
+        ("https://ferret-plus.com/.rss") ;; Ferret
+        ("https://news.ycombinator.com/rss") ;; Hacker News
+        ("https://www.infoq.com/jp/feed?token=6He6dTMXb4uv4glWb5XjKb3YeU0sB0QV") ;; InfoQ
+        ("http://rss.rssad.jp/rss/itmnews/2.0/news_bursts.xml") ;; IT Media
+        ("http://rss.rssad.jp/rss/itmnews/2.0/news_security.xml") ;; IT Media
+        ("http://feeds.japan.cnet.com/rss/cnet/all.rdf") ;; CNET
+        ("http://b.hatena.ne.jp/hotentry/it.rss") ;; Hatena1
+        ("http://b.hatena.ne.jp/entrylist/it.rss") ;; Hatena2
+        ("http://gihyo.jp/dev/feed/rss2") ;; Gihyo
+        ;; /.
+        ("http://rss.rssad.jp/rss/slashdot/slashdot.rss")
+        ("http://rss.rssad.jp/rss/slashdot/linux.rss")
+        ("http://rss.rssad.jp/rss/slashdot/developers.rss")
+        ("http://rss.rssad.jp/rss/slashdot/opensource.rss")
+        ("http://rss.rssad.jp/rss/slashdot/mobile.rss")
+        ("http://rss.rssad.jp/rss/slashdot/it.rss")
+        ("http://rss.rssad.jp/rss/slashdot/apple.rss")
+        ("http://rss.rssad.jp/rss/slashdot/security.rss")))
+
+
 ;; emacs-w3m
 (el-get-bundle 'w3m)
 
@@ -138,6 +188,9 @@
 (el-get-bundle 'git-gutter+) ;; 変更箇所マーク
 (el-get-bundle 'gitconfig-mode)
 (el-get-bundle 'gitignore-mode)
+
+;; SASS
+(el-get-bundle 'sass-mode)
 
 ;; OTHER
 (el-get-bundle 'pkg-info)
@@ -161,9 +214,9 @@
 ;; Ruby
 (el-get-bundle 'flymake-ruby)
 (el-get-bundle 'motion-mode)
-                                        ; rubyシンタックスハイライト
+; rubyシンタックスハイライト
 (el-get-bundle 'ruby-mode)
-                                        ; 括弧、do-endの自動補完
+; 括弧、do-endの自動補完
 (el-get-bundle 'ruby-electric)
 ;; 対応するブロックのハイライト
 (el-get-bundle 'ruby-block)
@@ -219,15 +272,20 @@
 
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.ejs$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.ctp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 
+;; php&html
 (defun web-mode-hook ()
   "Hooks for web mode"
-  (setq tab-width 2)
+  (setq tab-width 4)
   (setq web-mode-html-offset 4)
   (setq web-mode-css-offset 4)
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2))
+  (setq web-mode-markup-indent-offset 4)
+  (setq web-mode-css-indent-offset 4)
+  (setq web-mode-code-indent-offset 4)
+  (setq web-mode-engines-alist
+        '(("php" . "\\.ctp\\'"))))
 
 (add-hook 'web-mode-hook 'web-mode-hook)
 
@@ -347,8 +405,8 @@
 ;; (add-to-list 'auto-mode-alist '("\\.jsx$'" . js2-jsx-mode))
 
 (add-hook 'js2-mode-hook '(lambda ()
-                            (setq tab-width 2)
-                            (setq js2-basic-offset 2)
+                            (setq tab-width 4)
+                            (setq js2-basic-offset 4)
                             (setq indent-tabs-mode nil)
                             (flycheck-mode 1)))
 
@@ -377,7 +435,7 @@
 (require 'json-mode)
 (add-to-list 'auto-mode-alist '("\\.json$'" . json-mode))
 (add-hook 'json-mode-hook '(lambda ()
-                             (setq tab-width 2)
+                             (setq tab-width 4)
                              (make-local-variable 'js-indent-level)
                              (setq js-indent-level 2)))
 
@@ -400,8 +458,8 @@
 
 ;; Need gem (rubocop, ruby-lint)
 (add-hook 'ruby-mode-hook '(lambda ()
-                             (setq tab-width 2)
-                             (setq ruby-indent-level 2)
+                             (setq tab-width 4)
+                             (setq ruby-indent-level 4)
                              (setq ruby-indent-tabs-mode nil)
                              (setq ruby-deep-indent-paren-style nil)
                              (setq flycheck-checker 'ruby-rubocop)
