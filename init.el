@@ -184,8 +184,6 @@
 (el-get-bundle 'helm-ls-git)
 
 ;; GIT
-(el-get-bundle 'magit) ;; GITクライアント
-(el-get-bundle 'git-gutter+) ;; 変更箇所マーク
 (el-get-bundle 'gitconfig-mode)
 (el-get-bundle 'gitignore-mode)
 
@@ -197,11 +195,6 @@
 (el-get-bundle 'rainbow-delimiters)
 (el-get-bundle 'move-text)
 
-;; SCALA
-(el-get-bundle 'scala-mode2)
-(el-get-bundle 'ensime)
-(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
-
 ;; C/C++
 
 ;; GLSL
@@ -209,7 +202,7 @@
 
 ;; LISP
 ;; CommonLisp
-(el-get-bundle 'slime)
+
 
 ;; Ruby
 (el-get-bundle 'flymake-ruby)
@@ -345,9 +338,6 @@
 ;;---------------------------
 ;; CommonLisp(SBCL)
 ;;---------------------------
-(setq inferior-lisp-program "sbcl")
-(require 'slime)
-(slime-setup '(slime-repl slime-fancy slime-banner))
 
 ;;---------------------------
 ;; C/C++
@@ -513,3 +503,18 @@
 
 (provide 'init)
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(flycheck-disabled-checkers (quote (javascript-jshint javascript-jscs)))
+ '(package-selected-packages
+   (quote
+    (zenburn-theme company pug-mode w3m gitignore-mode gitconfig-mode))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
