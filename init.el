@@ -2,6 +2,13 @@
 ;;; Commentary:
 ;;; Code:
 
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (set-language-environment "Japanese")
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
@@ -116,6 +123,9 @@
     (goto-char (point-max))
     (eval-print-last-sexp)))
 
+(el-get-bundle 'editorconfig)
+(editorconfig-mode 1)
+
 ;; Shell
 (el-get-bundle 'multi-term)
 
@@ -224,8 +234,6 @@
 ;; Coffee
 (el-get-bundle 'coffee-mode)
 
-;; Slim
-(el-get-bundle 'slim-mode)
 ;; pug-mode
 (el-get-bundle 'pug-mode)
 (require 'pug-mode)
@@ -239,10 +247,8 @@
 
 ;; Java
 
-
 ;; JavaScript
 (el-get-bundle 'js2-mode)
-;;(el-get-bundle alanmimms/pegjs-mode) ;; うごかん。。
 
 ;; JSON
 (el-get-bundle 'json-mode)
@@ -255,6 +261,7 @@
 
 ;; Clojure
 (el-get-bundle 'clojure-mode)
+(el-get-bundle 'cider)
 
 ;; Markdown
 (el-get-bundle 'markdown-mode)
@@ -267,16 +274,12 @@
 (add-to-list 'auto-mode-alist '("\\.ejs$" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.ctp\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
 
 ;; php&html
 (defun web-mode-hook ()
   "Hooks for web mode"
-  (setq tab-width 4)
-  (setq web-mode-html-offset 4)
-  (setq web-mode-css-offset 4)
-  (setq web-mode-markup-indent-offset 4)
-  (setq web-mode-css-indent-offset 4)
-  (setq web-mode-code-indent-offset 4)
   (setq web-mode-engines-alist
         '(("php" . "\\.ctp\\'"))))
 
@@ -359,8 +362,6 @@
 ;; PHP
 ;;---------------------------
 (add-hook 'php-mode-hook '(lambda ()
-                            (setq tab-width 4)
-                            (setq c-basic-offset 4)
                             (setq indent-tabs-mode nil)))
 (add-to-list 'auto-mode-alist '("\\.ctp\\'" . php-mode))
 
@@ -369,7 +370,7 @@
 ;;---------------------------
 (require 'typescript-mode)
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-mode))
+
 
 (require 'tide)
 (add-hook 'typescript-mode-hook (lambda ()
@@ -395,8 +396,6 @@
 ;; (add-to-list 'auto-mode-alist '("\\.jsx$'" . js2-jsx-mode))
 
 (add-hook 'js2-mode-hook '(lambda ()
-                            (setq tab-width 4)
-                            (setq js2-basic-offset 4)
                             (setq indent-tabs-mode nil)
                             (flycheck-mode 1)))
 
@@ -424,10 +423,6 @@
 ;;---------------------------
 (require 'json-mode)
 (add-to-list 'auto-mode-alist '("\\.json$'" . json-mode))
-(add-hook 'json-mode-hook '(lambda ()
-                             (setq tab-width 4)
-                             (make-local-variable 'js-indent-level)
-                             (setq js-indent-level 2)))
 
 ;;---------------------------
 ;; Ruby用の拡張ロードと設定
@@ -448,8 +443,6 @@
 
 ;; Need gem (rubocop, ruby-lint)
 (add-hook 'ruby-mode-hook '(lambda ()
-                             (setq tab-width 4)
-                             (setq ruby-indent-level 4)
                              (setq ruby-indent-tabs-mode nil)
                              (setq ruby-deep-indent-paren-style nil)
                              (setq flycheck-checker 'ruby-rubocop)
@@ -460,9 +453,6 @@
 
 (require 'coffee-mode)
 (add-to-list 'auto-mode-alist '("\\.coffee?\\'" . coffee-mode))
-
-(require 'slim-mode)
-(add-to-list 'auto-mode-alist '("\\.slim?\\'" . slim-mode))
 
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yaml?\\'" . yaml-mode))
