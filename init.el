@@ -235,7 +235,7 @@
 (el-get-bundle 'coffee-mode)
 
 ;; pug-mode
-(el-get-bundle 'pug-mode)
+(el-get-bundle 'hlissner/emacs-pug-mode)
 (require 'pug-mode)
 
 ;; Yaml
@@ -301,8 +301,8 @@
 ;;(load-theme 'wombat t)
 
 ;; # Zenburn Theme
-(el-get-bundle zenburn-theme)
-(add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/zenburn-theme")
+(el-get-bundle 'bbatsov/zenburn-emacs)
+(add-to-list 'custom-theme-load-path "~/.emacs.d/el-get/zenburn-emacs")
 (load-theme 'zenburn t)
 
 ;; # Solarized
