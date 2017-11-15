@@ -200,6 +200,9 @@
 ;; SASS
 (el-get-bundle 'sass-mode)
 
+;; Stylus
+(el-get-bundle 'vladh/stylus-mode)
+
 ;; OTHER
 (el-get-bundle 'pkg-info)
 (el-get-bundle 'rainbow-delimiters)
@@ -213,6 +216,8 @@
 ;; LISP
 ;; CommonLisp
 
+;; nginx-conf
+(el-get-bundle 'nginx-mode)
 
 ;; Ruby
 (el-get-bundle 'flymake-ruby)
@@ -271,11 +276,16 @@
 (el-get-bundle 'web-mode)
 
 (require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.ejs$" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.ctp\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+
+(require 'stylus-mode)
+(add-to-list 'auto-mode-alist '("\\.styl$" . stylus-mode))
+
 
 ;; php&html
 (defun web-mode-hook ()
