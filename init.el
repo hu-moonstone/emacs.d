@@ -45,6 +45,8 @@
 (el-get-bundle 'helm-ag)
 (el-get-bundle 'helm-ls-git)
 (el-get-bundle 'editorconfig)
+(el-get-bundle 'company)
+
 (load "project-init")
 
 ;;Ruby
@@ -116,13 +118,15 @@
 (el-get-bundle 'typescript-mode)
 ;; tsserverと連携
 (el-get-bundle 'tide)
-(el-get-bundle 'company)
 
 ;; Clojure
 (el-get-bundle 'clojure-mode)
 (el-get-bundle 'cider)
 (autoload 'clojure-mode "clojure-mode" nil t)
+(add-hook 'clojure-mode-hook #'company-mode)
+
 (autoload 'cider "cider" nil t)
+
 
 ;; Markdown
 (el-get-bundle 'markdown-mode)
@@ -204,17 +208,16 @@
 ;;---------------------------
 ;; TypeScript
 ;;---------------------------
-(autoload 'typescript-mode "typescript-mode" nil t)
-(eval-after-load "typescript-mode"
-  (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode)))
+(require 'typescript-mode)
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
 
-(require 'tide)
-(add-hook 'typescript-mode-hook (lambda ()
-                                  (tide-setup)
-                                  (flycheck-mode t)
-                                  (setq flycheck-check-syntax-automatically)
-                                  (eldoc-mode t)
-                                  (company-mode t)))
+;; (require 'tide)
+;; (add-hook 'typescript-mode-hook (lambda ()
+;;                                   (tide-setup)
+;;                                   (flycheck-mode t)
+;;                                   (setq flycheck-check-syntax-automatically)
+;;                                   (eldoc-mode t)
+;;                                   (company-mode t)))
 
 (setq web-mode-content-types-alist '(("jsx" . ".*\\.tsx?")))
 
@@ -281,3 +284,17 @@
 
 (provide 'init)
 ;;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (w3 queue gitignore-mode gitconfig-mode esup company cherry-blossom-theme))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
