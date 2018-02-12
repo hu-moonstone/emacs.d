@@ -50,8 +50,8 @@
 ;; カッコのハイライトの色設定
 (setq show-paren-delay 1)
 (setq show-paren-style 'expression)
-(set-face-background 'show-paren-match-face "black")
-(set-face-foreground 'show-paren-match-face "white")
+(set-face-background 'show-paren-match-face "#151019")
+;;(set-face-foreground 'show-paren-match-face "#403047")
 
 ;; バックアップファイル無効
 (setq make-backup-files nil)
