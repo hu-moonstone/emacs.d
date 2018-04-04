@@ -10,6 +10,9 @@
 (set-default-coding-systems 'utf-8)
 (prefer-coding-system 'utf-8)
 
+(setq browse-url-browser-function 'browse-url-generic
+  browse-url-generic-program "google-chrome")
+
 ;; フォント設定
 (add-to-list 'default-frame-alist '(font . "Myrica M-14"))
 
