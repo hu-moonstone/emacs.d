@@ -59,6 +59,9 @@
 ;; (el-get-bundle 'projectile-rails)
 ;; (load "ruby-init")
 
+;; Nginx
+(el-get-bundle 'nginx-mode)
+
 ;; Shell
 (el-get-bundle 'multi-term)
 
@@ -253,9 +256,10 @@
 ;;---------------------------
 ;; JSON
 ;;---------------------------
-(autoload 'json-mode "json-mode" nil t)
-(eval-after-load "json-mode"
-  (add-to-list 'auto-mode-alist '("\\.json$'" . json-mode)))
+(add-hook 'js-mode-hook
+          (lambda ()
+            (make-local-variable 'js-indent-level)
+            (setq js-indent-level 2)))
 
 (autoload 'coffee-mode "coffee-mode" nil t)
 (eval-after-load "coffee-mode"

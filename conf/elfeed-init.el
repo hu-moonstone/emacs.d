@@ -41,11 +41,11 @@
              ("http://b.hatena.ne.jp/entrylist/it.rss") ;; Hatena2
              ("http://gihyo.jp/dev/feed/rss2") ;; Gihyo
              ;; /.
-             ("http://rss.rssad.jp/rss/slashdot/slashdot.rss")
-             ("http://rss.rssad.jp/rss/slashdot/linux.rss")
-             ("http://rss.rssad.jp/rss/slashdot/developers.rss")
-             ("http://rss.rssad.jp/rss/slashdot/opensource.rss")
-             ("http://rss.rssad.jp/rss/slashdot/mobile.rss")
-             ("http://rss.rssad.jp/rss/slashdot/it.rss")
-             ("http://rss.rssad.jp/rss/slashdot/apple.rss")
-             ("http://rss.rssad.jp/rss/slashdot/security.rss")))))
+             ("https://srad.jp/slashdot.rss")
+             ("https://srad.jp/linux.rss")
+             ("https://srad.jp/developers.rss")
+             ("https://srad.jp/opensource.rss")
+             ("https://srad.jp/mobile.rss")
+             ("https://srad.jp/it.rss")
+             ("https://srad.jp/apple.rss")
+             ("https://srad.jp/security.rss")))))
