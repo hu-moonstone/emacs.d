@@ -65,6 +65,9 @@
 ;; Shell
 (el-get-bundle 'multi-term)
 
+;; Codic
+(el-get-bundle 'codic)
+
 ;; (el-get-bundle 'smooth-scroll)
 ;; (smooth-scroll-mode t)
 
