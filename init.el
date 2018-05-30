@@ -2,191 +2,334 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq gc-cons-threshold (* 128 1024 1024))
-
-(require 'package)
+(package-initialize)
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
         ("melpa" . "http://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")))
-(package-initialize)
 
-;; Byte compile
-;;$ emacs -batch -f batch-byte-compile /path/to/*.el
-(setq load-path (cons "~/.emacs.d/conf" load-path))
+;; straight.elの設定
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 4))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(load "basic-init")
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
 
-;; el-getの設定
-(when load-file-name
-  (setq user-emacs-directory (file-name-directory load-file-name)))
+;; ---------------------------------
+;; Emacsの通常設定
+;; ---------------------------------
+(set-language-environment "Japanese")
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-buffer-file-coding-system 'utf-8)
+(setq buffer-file-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(prefer-coding-system 'utf-8)
+(setq gc-cons-threshold (* 128 1024 1024))
 
-(add-to-list 'load-path (locate-user-emacs-file "el-get/el-get"))
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "google-chrome")
 
-(el-get-bundle 'elfeed)
-(load "elfeed-init")
+;; フォント設定
+(add-to-list 'default-frame-alist '(font . "Myrica M-14"))
 
-(el-get-bundle 'cherry-blossom-theme)
-(load "theme-init")
+;; スタートアップメッセージ非表示
+(setq inhibit-startup-message t)
 
-(el-get-bundle 'powerline)
-(el-get-bundle 'tabbar)
-(load "ui-init")
+;; C-hをBackspaceとして使う
+(global-set-key "\C-h" 'delete-backward-char)
+(global-set-key "\C-ch" 'help-command)
 
-(el-get-bundle 'projectile)
-(el-get-bundle 'flycheck)
-(el-get-bundle 'helm)
-(el-get-bundle 'helm-ag)
-(el-get-bundle 'helm-ls-git)
-(el-get-bundle 'editorconfig)
-(el-get-bundle 'company)
+;; Tab: 全バッファーに対して
+;; (setq default-tab-width 2)
+(setq-default tab-width 4 indent-tabs-mode nil)
 
-(load "project-init")
+;; 改行コード表示
+(setq eol-mnemonic-dos "(CRLF)")
+(setq eol-mnemonic-mac "(CR)")
+(setq eol-mnemonic-unix "(LF)")
 
-;;Ruby
-;; (el-get-bundle 'flymake-ruby)
-;; (el-get-bundle 'motion-mode)
-;; (el-get-bundle 'ruby-mode)
-;; (el-get-bundle 'ruby-electric)
-;; (el-get-bundle 'ruby-block)
-;; (el-get-bundle 'inf-ruby)
-;; (el-get-bundle 'projectile-rails)
-;; (load "ruby-init")
+;; メニュー非表示
+(menu-bar-mode 0)
 
-;; Nginx
-(el-get-bundle 'nginx-mode)
+;; ツールバー非表示
+(tool-bar-mode 0)
 
-;; Shell
-(el-get-bundle 'multi-term)
+;; 列番号表示
+(column-number-mode t)
 
-;; Codic
-(el-get-bundle 'codic)
+;; 行番号表示
+(global-linum-mode t)
 
-;; (el-get-bundle 'smooth-scroll)
-;; (smooth-scroll-mode t)
+;; C-kで行全体削除
+(setq kill-whole-line t)
 
-;; emacs-w3m
-(el-get-bundle 'w3)
+;; 対応するカッコのハイライト
+(show-paren-mode 1)
 
-(el-get-bundle 'auto-complete)
-(el-get-bundle 'undo-tree)
-;; (el-get-bundle evil) ;; VIモード
+;; カッコのハイライトの色設定
+(setq show-paren-delay 1)
+(setq show-paren-style 'expression)
+(set-face-background 'show-paren-match-face "#151019")
+;;(set-face-foreground 'show-paren-match-face "#403047")
+
+;; バックアップファイル無効
+(setq make-backup-files nil)
+(setq auto-save-list-file-prefix nil)
+(setq create-lockfiles nil)
+
+;; オートセーブ無効
+(setq auto-save-default nil)
+
+;; 末尾スペース処理
+(setq-default show-trailing-whitespace t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; ファイル名補完で大文字小文字の区別をなくす
+(setq completion-ignore-case t)
+
+;; Emacs以外から編集されたものも自動でバッファをリロード
+(global-auto-revert-mode 1)
+
+;; 現在の行をハイライト
+;; (global-hl-line-mode t) ;; 重いのでコメントアウト
+
+
+;; モードラインに列番号表示
+(column-number-mode 1)
+
+;; モードラインに行番号表示
+(line-number-mode 1)
+
+;; リージョンの強調表示を行う
+(transient-mark-mode 1)
+
+;; ノンアクティブなウインドウのカーソル表示を行わない
+(setq cursor-in-non-selected-windows nil)
+
+;; コードの色分けをON
+(global-font-lock-mode t)
+
+;; バッファリストをC-x C-bで表示
+(global-set-key "\C-x\C-b" 'buffer-menu)
+
+;; タブの表示
+(setq whitespace-style '(face trailing tabs tab-mark))
+(setq whitespate-display-mappings
+      '((tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
+
+(require 'whitespace)
+(global-whitespace-mode 1)
+
+;; 遅延行ハイライト
+(require 'hl-line)
+(defun global-hl-line-timer-function()
+  (global-hl-line-unhighlight-all)
+  (let ((global-hl-line-mode t))
+    (global-hl-line-highlight)))
+(setq global-hl-line-timer
+      (run-with-idle-timer 0.01 t 'global-hl-line-timer-function))
+
+
+;; diredでoを入力した際、そのファイルをgnomeオープンする
+(add-hook 'dired-load-hook
+          (function (lambda ()
+                      (define-key dired-mode-map "o" 'dired-open-file))))
+
+(defun dired-open-file ()
+  "In dired, open the file named on this line."
+  (interactive)
+  (let* ((file (dired-get-filename)))
+    (message "Opening %s..." file)
+    (call-process "gnome-open" nil 0 nil file)
+    (message "Opening %s done" file)))
+
+
+;; power line
+(use-package powerline
+  :init
+
+  (defun powerline-my-theme ()
+    "Setup the my mode-line."
+    (interactive)
+    (setq powerline-current-separator 'utf-8)
+    (setq-default mode-line-format
+                  '("%e"
+                    (:eval
+                     (let* ((active (powerline-selected-window-active))
+                            (mode-line (if active 'mode-line 'mode-line-inactive))
+                            (face1 (if active 'mode-line-1-fg 'mode-line-2-fg))
+                            (face2 (if active 'mode-line-1-arrow 'mode-line-2-arrow))
+                            (separator-left (intern (format "powerline-%s-%s"
+                                                            (powerline-current-separator)
+                                                            (car powerline-default-separator-dir))))
+                            (lhs (list (powerline-raw " " face1)
+                                       (powerline-major-mode face1)
+                                       (powerline-raw " " face1)
+                                       (funcall separator-left face1 face2)
+                                       (powerline-buffer-id nil )
+                                       (powerline-raw " [ ")
+                                       (powerline-raw mode-line-mule-info nil)
+                                       (powerline-raw "%*" nil)
+                                       (powerline-raw " |")
+                                       (powerline-process nil)
+                                       (powerline-vc)
+                                       (powerline-raw " ]")
+                                       ))
+                            (rhs (list (powerline-raw "%4l" 'l)
+                                       (powerline-raw ":" 'l)
+                                       (powerline-raw "%2c" 'l)
+                                       (powerline-raw " | ")
+                                       (powerline-raw "%6p" )
+                                       (powerline-raw " ")
+                                       )))
+                       (concat (powerline-render lhs)
+                               (powerline-fill nil (powerline-width rhs))
+                               (powerline-render rhs)))))))
+
+  (defun make/set-face (face-name fg-color bg-color weight)
+    (make-face face-name)
+    (set-face-attribute face-name nil
+                        :foreground fg-color :background bg-color :box nil :weight weight))
+  (make/set-face 'mode-line-1-fg "#282C34" "#EF8300" 'bold)
+  (make/set-face 'mode-line-2-fg "#AAAAAA" "#2F343D" 'bold)
+  (make/set-face 'mode-line-1-arrow  "#666666" "#3E4451" 'bold)
+  (make/set-face 'mode-line-2-arrow  "#666666" "#3E4451" 'bold)
+  (powerline-my-theme))
+
+
+
+
+;; theme (cherry blossom)
+(use-package cherry-blossom-theme)
+
+;; elfeed
+(use-package elfeed
+  :init
+  (progn
+    (global-set-key (kbd "C-x w") 'elfeed)
+    (setq elfeed-feeds
+          '(;; Security
+            ("http://vrda.jpcert.or.jp/feed/ja/atom.xml") ;; VRDA Security
+            ("http://jvndb.jvn.jp/ja/rss/jvndb_new.rdf") ;; JVNDB Security
+            ;; Linux, Debian, Free Software Foundation
+            ("https://www.debian.org/News/news")
+            ("https://www.debian.org/security/dsa")
+            ("https://static.fsf.org/fsforg/rss/news.xml")
+            ("https://static.fsf.org/fsforg/rss/blogs.xml")
+            ("https://www.linux.com/feeds/news/rss")
+            ("https://www.w3.org/blog/news/feed")
+            ;; Tech
+            ("https://thinkit.co.jp/rss.xml") ;; ThinkIT
+            ("http://postd.cc/feed/") ;; PostD
+            ("https://codeiq.jp/magazine/feed/") ;; CodeIQ
+            ("http://rss.rssad.jp/rss/codezine/new/20/index.xml") ;; Codezine
+            ("https://geechs-magazine.com/feed") ;; Geechs
+            ("http://uxmilk.jp/feed") ;;Uxmilk
+            ("http://jp.techcrunch.com/feed/") ;; Techcrunch
+            ("http://www.seleqt.net/feed/") ;; Seleqt
+            ("http://feeds.feedburner.com/WebmasterCentral?format=xml") ;; Google Web-Master Official Blog
+            ("https://blogs.msdn.microsoft.com/bingdevcenter/feed/") ;; Bing Developer Blog
+            ("https://hacks.mozilla.org/feed/") ;; Mozilla Hacks
+            ("http://wired.jp/rssfeeder/") ;; Wired
+            ("https://liginc.co.jp/feed") ;; LIG
+            ("https://ferret-plus.com/.rss") ;; Ferret
+            ("https://news.ycombinator.com/rss") ;; Hacker News
+            ("https://www.infoq.com/jp/feed?token=6He6dTMXb4uv4glWb5XjKb3YeU0sB0QV") ;; InfoQ
+            ("http://rss.rssad.jp/rss/itmnews/2.0/news_bursts.xml") ;; IT Media
+            ("http://rss.rssad.jp/rss/itmnews/2.0/news_security.xml") ;; IT Media
+            ("http://feeds.japan.cnet.com/rss/cnet/all.rdf") ;; CNET
+            ("http://b.hatena.ne.jp/hotentry/it.rss") ;; Hatena1
+            ("http://b.hatena.ne.jp/entrylist/it.rss") ;; Hatena2
+            ("http://gihyo.jp/dev/feed/rss2") ;; Gihyo
+            ;; /.
+            ("https://srad.jp/slashdot.rss")
+            ("https://srad.jp/linux.rss")
+            ("https://srad.jp/developers.rss")
+            ("https://srad.jp/opensource.rss")
+            ("https://srad.jp/mobile.rss")
+            ("https://srad.jp/it.rss")
+            ("https://srad.jp/apple.rss")
+            ("https://srad.jp/security.rss")))))
+
+
+;; nginx confファイル用のモード
+(use-package nginx-mode)
+
+;; codic.jp
+(use-package codic)
+
+;; Emacs上のターミナル環境
+(use-package multi-term)
+
+;; w3m
+(use-package w3)
 
 ;; GIT
-(el-get-bundle 'gitconfig-mode)
-(el-get-bundle 'gitignore-mode)
+(use-package gitconfig-mode)
+(use-package gitignore-mode)
+(use-package magit)
 
-;; SASS
-(el-get-bundle 'sass-mode)
+;; SASS/Stylus
+(use-package sass-mode)
+(use-package stylus-mode
+  :straight
+  (stylus-mode :type git :host github :repo "vladh/stylus-mode")
+  :init
+  (add-to-list 'auto-mode-alist '("\\.styl$" . stylus-mode)))
 
-;; OTHER
-(el-get-bundle 'pkg-info)
-(el-get-bundle 'rainbow-delimiters)
-(el-get-bundle 'move-text)
-
-;; C/C++
-
-;; LISP
-;; CommonLisp
-
-;; nginx-conf
-(el-get-bundle 'nginx-mode)
-
-;; Coffee
-(el-get-bundle 'coffee-mode)
-
-;; pug-mode
-(el-get-bundle 'hlissner/emacs-pug-mode)
-(autoload 'pug-mode "pug-mode" nil t)
+;; Pug
+(use-package pug-mode)
 
 ;; Yaml
-(el-get-bundle 'yaml-mode)
+(use-package yaml-mode)
 
 ;; PHP
-(el-get-bundle 'php-mode)
-(el-get-bundle 'php-completion)
-
-;; Java
+(use-package php-mode)
 
 ;; JavaScript
-(el-get-bundle 'js2-mode)
+(use-package js2-mode)
 
 ;; JSON
-(el-get-bundle 'json-mode)
+(use-package json-mode)
 
 ;; TypeScript
-(el-get-bundle 'typescript-mode)
-;; tsserverと連携
-(el-get-bundle 'tide)
+(use-package typescript-mode)
+;; TypeScript(tsserver)
+(use-package tide)
+
+;; Web
+(use-package web-mode
+  :init
+  (progn
+    (add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.ejs$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.ctp\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+    (defun web-mode-hook ()
+      (setq web-mode-engines-alist
+            '(("php" . "\\.ctp\\'"))))
+    (add-hook 'web-mode-hook 'web-mode-hook)))
 
 ;; Clojure
-(el-get-bundle 'clojure-mode)
-(el-get-bundle 'cider)
-(autoload 'clojure-mode "clojure-mode" nil t)
-(add-hook 'clojure-mode-hook #'company-mode)
-
-(autoload 'cider "cider" nil t)
-
+(use-package clojure-mode)
+(use-package cider)
 
 ;; Markdown
-(el-get-bundle 'markdown-mode)
-(el-get-bundle 'markdown-preview-mode)
+(use-package markdown-mode)
+(use-package markdown-preview-mode)
 
-;; HTMLとその他の言語の混合
-(el-get-bundle 'web-mode)
-
-(autoload 'web-mode "web-mode" nil t)
-(eval-after-load "web-mode"
-  '(progn
-     (add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.ejs$" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.ctp\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
-     (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))))
-(defun web-mode-hook ()
-  (setq web-mode-engines-alist
-        '(("php" . "\\.ctp\\'"))))
-(add-hook 'web-mode-hook 'web-mode-hook)
-
-;; Stylus
-(el-get-bundle 'vladh/stylus-mode)
-
-(autoload 'stylus-mode "stylus-mode" nil t)
-(eval-after-load "stylus-mode"
-  '(progn
-     (add-to-list 'auto-mode-alist '("\\.styl$" . stylus-mode))))
-
-
-
-;;---------------------------
-;; LISP
-;;---------------------------
-(eval-after-load 'lisp-mode
-  '(progn
-     (add-to-list 'auto-mode-alist '("\\.ls$" . lisp-mode))
-     (add-to-list 'auto-mode-alist '("\\.lisp$" . lisp-mode))))
-
-;; Auto complete
-(add-hook 'emacs-lisp-mode-hook '(lambda ()
-                                   (setq indent-tabs-mode nil)
-                                   (require 'auto-complete)
-                                   (auto-complete-mode t)))
-;; 関数情報表示
-(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
-
-;; 対応括弧色付け
-(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
-
-;;---------------------------
-;; CommonLisp(SBCL)
-;;---------------------------
 
 ;; C/C++
 (defun c-c++-mode-init ()
@@ -195,113 +338,43 @@
 (add-hook 'c++-mode-hook 'c-c++-mode-init)
 
 ;; GLSL
-(el-get-bundle 'glsl-mode)
-(autoload 'glsl-mode "glsl-mode" nil t)
-(eval-after-load "glsl-mode"
-  '(progn
-     (add-to-list 'auto-mode-alist '("\\.vsh\\'" . glsl-mode))
-     (add-to-list 'auto-mode-alist '("\\.fsh\\'" . glsl-mode))
-     (add-to-list 'auto-mode-alist '("\\.vertex\\'" . glsl-mode))
-     (add-to-list 'auto-mode-alist '("\\.fragment\\'" . glsl-mode))))
+(use-package glsl-mode
+  :init
+  (progn
+    (add-to-list 'auto-mode-alist '("\\.vsh\\'" . glsl-mode))
+    (add-to-list 'auto-mode-alist '("\\.fsh\\'" . glsl-mode))
+    (add-to-list 'auto-mode-alist '("\\.vertex\\'" . glsl-mode))
+    (add-to-list 'auto-mode-alist '("\\.fragment\\'" . glsl-mode))))
 
-;;---------------------------
-;; PHP
-;;---------------------------
-(add-hook 'php-mode-hook '(lambda ()
-                            (setq indent-tabs-mode nil)))
-(add-to-list 'auto-mode-alist '("\\.ctp\\'" . php-mode))
+;; Python
+(use-package python-mode)
 
-;;---------------------------
-;; TypeScript
-;;---------------------------
-(require 'typescript-mode)
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-mode))
-
-;; (require 'tide)
-;; (add-hook 'typescript-mode-hook (lambda ()
-;;                                   (tide-setup)
-;;                                   (flycheck-mode t)
-;;                                   (setq flycheck-check-syntax-automatically)
-;;                                   (eldoc-mode t)
-;;                                   (company-mode t)))
-
+;; jsx, tsx
 (setq web-mode-content-types-alist '(("jsx" . ".*\\.tsx?")))
 
-;;---------------------------
-;; JavaScript
-;;---------------------------
-(autoload 'js2-mode "js2-mode" nil t)
-(eval-after-load "js2-mode"
-  '(progn
-     (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-     (add-to-list 'auto-mode-alist '("\\.pegjs$" . js2-mode))
-     (add-hook 'js2-mode-hook '(lambda ()
-                                 (setq indent-tabs-mode nil)
-                                 (flycheck-mode 1)))
-     (add-hook 'js2-jsx-mode-hook '(lambda ()
-                                     (flycheck-mode 1)))
-     (eval-after-load 'flycheck '(custom-set-variables
-                                  '(flycheck-disabled-checkers '(javascript-jshint javascript-jscs))))
-     (flycheck-add-mode 'javascript-eslint 'js2-jsx-mode)
+;; コード補完
+(use-package auto-complete)
 
-     (setq js2-include-browser-externs nil)
-     (setq js2-mode-show-parse-errors nil)
-     (setq js2-mode-show-strict-warnings nil)
-     (setq js2-highlight-external-variables nil)
-     (setq js2-include-jslint-globals nil)
+;; Undo拡張
+(use-package undo-tree)
 
-     (add-hook 'web-mode-hook
-               (lambda ()
-                 (when (equal web-mode-content-type "jsx")
-                   (flycheck-add-mode 'javascript-eslint 'web-mode)
-                   (flycheck-mode))))))
+;; editorconfig対応
+(use-package editorconfig)
 
-;;---------------------------
-;; JSON
-;;---------------------------
-(add-hook 'js-mode-hook
-          (lambda ()
-            (make-local-variable 'js-indent-level)
-            (setq js-indent-level 2)))
+;; 括弧対応
+(use-package smartparens)
 
-(autoload 'coffee-mode "coffee-mode" nil t)
-(eval-after-load "coffee-mode"
-  (add-to-list 'auto-mode-alist '("\\.coffee?\\'" . coffee-mode)))
+;; 括弧色付け
+(use-package rainbow-delimiters)
 
-(autoload 'yaml-mode "yaml-mode" nil t)
-(eval-after-load "yaml-mode"
-  (add-to-list 'auto-mode-alist '("\\.yaml?\\'" . yaml-mode)))
+;; テキストの行単位での移動
+(use-package move-text)
 
-;;---------------------------
-;; Python
-;;---------------------------
-(autoload 'python-mode "python-mode" nil t)
-(eval-after-load "python-mode"
-  (add-to-list 'auto-mode-alist '("\\.py$" . python-mode)))
+;; 補完・リストアップ
+(use-package helm)
 
-;;---------------------------
-;; Markdown Setting
-;;---------------------------
-(autoload 'markdown-mode "markdown-mode" nil t)
-(eval-after-load "markdown-mode"
-  '(progn
-     (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-     (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))))
+;; シンタックスチェック
+(use-package flycheck)
 
-
-(provide 'init)
-;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (w3 queue gitignore-mode gitconfig-mode esup company cherry-blossom-theme))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; org-mode
+(use-package org-mode)
