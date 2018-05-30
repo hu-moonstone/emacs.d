@@ -36,11 +36,17 @@
 (prefer-coding-system 'utf-8)
 (setq gc-cons-threshold (* 128 1024 1024))
 
+
+
+;; ブラウザ
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "google-chrome")
 
 ;; フォント設定
 (add-to-list 'default-frame-alist '(font . "Myrica M-14"))
+
+;; 行間
+(setq line-spacing 3)
 
 ;; スタートアップメッセージ非表示
 (setq inhibit-startup-message t)
@@ -375,6 +381,3 @@
 
 ;; シンタックスチェック
 (use-package flycheck)
-
-;; org-mode
-(use-package org-mode)
