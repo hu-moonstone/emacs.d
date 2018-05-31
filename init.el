@@ -163,7 +163,6 @@
 ;; power line
 (use-package powerline
   :init
-
   (defun powerline-my-theme ()
     "Setup the my mode-line."
     (interactive)
@@ -339,7 +338,7 @@
 
 ;; C/C++
 (defun c-c++-mode-init ()
-  (setq c-set-style "gnu"))
+  (c-set-style "gnu"))
 (add-hook 'c-mode-hook 'c-c++-mode-init)
 (add-hook 'c++-mode-hook 'c-c++-mode-init)
 
@@ -381,3 +380,13 @@
 
 ;; シンタックスチェック
 (use-package flycheck)
+
+
+
+;; init.elをバイトコンパイル
+(add-hook 'after-init-hook
+          '(lambda ()
+             (let* ((el (expand-file-name "init.el" user-emacs-directory))
+                    (elc (concat el "c")))
+               (when (file-newer-than-file-p el elc)
+                 (byte-compile-file el)))))
