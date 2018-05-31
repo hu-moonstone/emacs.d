@@ -36,8 +36,6 @@
 (prefer-coding-system 'utf-8)
 (setq gc-cons-threshold (* 128 1024 1024))
 
-
-
 ;; ブラウザ
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "google-chrome")
@@ -211,9 +209,6 @@
   (make/set-face 'mode-line-2-arrow  "#666666" "#3E4451" 'bold)
   (powerline-my-theme))
 
-
-
-
 ;; theme (cherry blossom)
 (use-package cherry-blossom-theme)
 
@@ -381,7 +376,9 @@
 ;; シンタックスチェック
 (use-package flycheck)
 
-
+;; org mode
+(use-package org
+  :init (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
 
 ;; init.elをバイトコンパイル
 (add-hook 'after-init-hook
