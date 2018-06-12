@@ -41,7 +41,7 @@
       browse-url-generic-program "google-chrome")
 
 ;; フォント設定
-(add-to-list 'default-frame-alist '(font . "Myrica M-14"))
+(add-to-list 'default-frame-alist '(font . "Myrica M-12"))
 
 ;; 行間
 (setq line-spacing 3)
@@ -126,6 +126,52 @@
 ;; バッファリストをC-x C-bで表示
 (global-set-key "\C-x\C-b" 'buffer-menu)
 
+;; バックタブ
+
+(add-hook 'text-mode-hook
+          '(lambda()
+;             (define-key text-mode-map "\C-i" 'tab-to-tab-stop)
+             (define-key text-mode-map "\C-i" 'tab-to-tab-stop-line-or-region)
+;             (define-key text-mode-map [backtab] 'backtab)
+             (define-key text-mode-map [backtab] 'backtab-line-or-region)
+             (setq tab-stop-list '(2 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128))
+             (setq indent-tabs-mode nil)))
+
+(defun tab-to-tab-stop-line-or-region ()
+  (interactive)
+  (if mark-active (save-excursion
+                    (setq count (count-lines (region-beginning) (region-end)))
+                    (goto-char (region-beginning))
+                    (while (> count 0)
+                      (tab-to-tab-stop)
+                      (forward-line)
+                      (setq count (1- count)))
+                    (setq deactivate-mark nil))
+    (tab-to-tab-stop)))
+
+(defun backtab()
+  "Do reverse indentation"
+  (interactive)
+  (back-to-indentation)
+  (delete-backward-char
+   (if (< (current-column) (car tab-stop-list)) 0
+     (- (current-column)
+        (car (let ((value (list 0)))
+               (dolist (element tab-stop-list value)
+                 (setq value (if (< element (current-column)) (cons element value) value)))))))))
+
+(defun backtab-line-or-region ()
+  (interactive)
+  (if mark-active (save-excursion
+                    (setq count (count-lines (region-beginning) (region-end)))
+                    (goto-char (region-beginning))
+                    (while (> count 0)
+                      (backtab)
+                      (forward-line)
+                      (setq count (1- count)))
+                    (setq deactivate-mark nil))
+    (backtab)))
+
 ;; タブの表示
 (setq whitespace-style '(face trailing tabs tab-mark))
 (setq whitespate-display-mappings
@@ -159,55 +205,55 @@
 
 
 ;; power line
-(use-package powerline
-  :init
-  (defun powerline-my-theme ()
-    "Setup the my mode-line."
-    (interactive)
-    (setq powerline-current-separator 'utf-8)
-    (setq-default mode-line-format
-                  '("%e"
-                    (:eval
-                     (let* ((active (powerline-selected-window-active))
-                            (mode-line (if active 'mode-line 'mode-line-inactive))
-                            (face1 (if active 'mode-line-1-fg 'mode-line-2-fg))
-                            (face2 (if active 'mode-line-1-arrow 'mode-line-2-arrow))
-                            (separator-left (intern (format "powerline-%s-%s"
-                                                            (powerline-current-separator)
-                                                            (car powerline-default-separator-dir))))
-                            (lhs (list (powerline-raw " " face1)
-                                       (powerline-major-mode face1)
-                                       (powerline-raw " " face1)
-                                       (funcall separator-left face1 face2)
-                                       (powerline-buffer-id nil )
-                                       (powerline-raw " [ ")
-                                       (powerline-raw mode-line-mule-info nil)
-                                       (powerline-raw "%*" nil)
-                                       (powerline-raw " |")
-                                       (powerline-process nil)
-                                       (powerline-vc)
-                                       (powerline-raw " ]")
-                                       ))
-                            (rhs (list (powerline-raw "%4l" 'l)
-                                       (powerline-raw ":" 'l)
-                                       (powerline-raw "%2c" 'l)
-                                       (powerline-raw " | ")
-                                       (powerline-raw "%6p" )
-                                       (powerline-raw " ")
-                                       )))
-                       (concat (powerline-render lhs)
-                               (powerline-fill nil (powerline-width rhs))
-                               (powerline-render rhs)))))))
+;; (use-package powerline
+;;   :init
+;;   (defun powerline-my-theme ()
+;;     "Setup the my mode-line."
+;;     (interactive)
+;;     (setq powerline-current-separator 'utf-8)
+;;     (setq-default mode-line-format
+;;                   '("%e"
+;;                     (:eval
+;;                      (let* ((active (powerline-selected-window-active))
+;;                             (mode-line (if active 'mode-line 'mode-line-inactive))
+;;                             (face1 (if active 'mode-line-1-fg 'mode-line-2-fg))
+;;                             (face2 (if active 'mode-line-1-arrow 'mode-line-2-arrow))
+;;                             (separator-left (intern (format "powerline-%s-%s"
+;;                                                             (powerline-current-separator)
+;;                                                             (car powerline-default-separator-dir))))
+;;                             (lhs (list (powerline-raw " " face1)
+;;                                        (powerline-major-mode face1)
+;;                                        (powerline-raw " " face1)
+;;                                        (funcall separator-left face1 face2)
+;;                                        (powerline-buffer-id nil )
+;;                                        (powerline-raw " [ ")
+;;                                        (powerline-raw mode-line-mule-info nil)
+;;                                        (powerline-raw "%*" nil)
+;;                                        (powerline-raw " |")
+;;                                        (powerline-process nil)
+;;                                        (powerline-vc)
+;;                                        (powerline-raw " ]")
+;;                                        ))
+;;                             (rhs (list (powerline-raw "%4l" 'l)
+;;                                        (powerline-raw ":" 'l)
+;;                                        (powerline-raw "%2c" 'l)
+;;                                        (powerline-raw " | ")
+;;                                        (powerline-raw "%6p" )
+;;                                        (powerline-raw " ")
+;;                                        )))
+;;                        (concat (powerline-render lhs)
+;;                                (powerline-fill nil (powerline-width rhs))
+;;                                (powerline-render rhs)))))))
 
-  (defun make/set-face (face-name fg-color bg-color weight)
-    (make-face face-name)
-    (set-face-attribute face-name nil
-                        :foreground fg-color :background bg-color :box nil :weight weight))
-  (make/set-face 'mode-line-1-fg "#282C34" "#EF8300" 'bold)
-  (make/set-face 'mode-line-2-fg "#AAAAAA" "#2F343D" 'bold)
-  (make/set-face 'mode-line-1-arrow  "#666666" "#3E4451" 'bold)
-  (make/set-face 'mode-line-2-arrow  "#666666" "#3E4451" 'bold)
-  (powerline-my-theme))
+;;   (defun make/set-face (face-name fg-color bg-color weight)
+;;     (make-face face-name)
+;;     (set-face-attribute face-name nil
+;;                         :foreground fg-color :background bg-color :box nil :weight weight))
+;;   (make/set-face 'mode-line-1-fg "#282C34" "#EF8300" 'bold)
+;;   (make/set-face 'mode-line-2-fg "#AAAAAA" "#2F343D" 'bold)
+;;   (make/set-face 'mode-line-1-arrow  "#666666" "#3E4451" 'bold)
+;;   (make/set-face 'mode-line-2-arrow  "#666666" "#3E4451" 'bold)
+;;   (powerline-my-theme))
 
 ;; theme (cherry blossom)
 (use-package cherry-blossom-theme)
@@ -240,7 +286,7 @@
             ("http://feeds.feedburner.com/WebmasterCentral?format=xml") ;; Google Web-Master Official Blog
             ("https://blogs.msdn.microsoft.com/bingdevcenter/feed/") ;; Bing Developer Blog
             ("https://hacks.mozilla.org/feed/") ;; Mozilla Hacks
-            ("http://wired.jp/rssfeeder/") ;; Wired
+            ("https://wired.jp/rssfeeder/") ;; Wired
             ("https://liginc.co.jp/feed") ;; LIG
             ("https://ferret-plus.com/.rss") ;; Ferret
             ("https://news.ycombinator.com/rss") ;; Hacker News
@@ -376,14 +422,20 @@
 ;; シンタックスチェック
 (use-package flycheck)
 
+;; コードフォーマッタ
+;; (use-package prettier-js
+;;   :init
+;;   (add-hook 'js2-mode-hook 'prettier-js-mode)
+;;   (add-hook 'web-mode-hook 'prettier-js-mode))
+
 ;; org mode
-(use-package org
-  :init (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
+;; (use-package org
+;;   :init (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode)))
 
 ;; init.elをバイトコンパイル
-(add-hook 'after-init-hook
-          '(lambda ()
-             (let* ((el (expand-file-name "init.el" user-emacs-directory))
-                    (elc (concat el "c")))
-               (when (file-newer-than-file-p el elc)
-                 (byte-compile-file el)))))
+;; (add-hook 'after-init-hook
+;;           '(lambda ()
+;;              (let* ((el (expand-file-name "init.el" user-emacs-directory))
+;;                     (elc (concat el "c")))
+;;                (when (file-newer-than-file-p el elc)
+;;                  (byte-compile-file el)))))
