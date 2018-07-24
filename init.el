@@ -266,6 +266,8 @@
             ("https://srad.jp/security.rss")))))
 
 
+;; Rust
+(use-package rust-mode)
 ;; nginx confファイル用のモード
 (use-package nginx-mode)
 
