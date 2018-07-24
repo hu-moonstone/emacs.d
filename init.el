@@ -424,7 +424,6 @@
 ;; シンタックスチェック
 (use-package flycheck)
 
-<<<<<<< HEAD
 (use-package adoc-mode)
 
 ;; テキストブラウザ
@@ -434,7 +433,7 @@
 (use-package pandoc
   :init
   (pandoc-turn-on-advice-eww))
-=======
+
 ;; コードフォーマッタ
 ;; (use-package prettier-js
 ;;   :init
@@ -452,4 +451,3 @@
 ;;                     (elc (concat el "c")))
 ;;                (when (file-newer-than-file-p el elc)
 ;;                  (byte-compile-file el)))))
->>>>>>> ab73054fb701c191fcd7a753a07ef60ae20836e7
