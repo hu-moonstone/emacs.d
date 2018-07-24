@@ -213,8 +213,6 @@
   (powerline-my-theme))
 
 
-
-
 ;; theme (cherry blossom)
 (use-package cherry-blossom-theme)
 
@@ -246,7 +244,7 @@
             ("http://feeds.feedburner.com/WebmasterCentral?format=xml") ;; Google Web-Master Official Blog
             ("https://blogs.msdn.microsoft.com/bingdevcenter/feed/") ;; Bing Developer Blog
             ("https://hacks.mozilla.org/feed/") ;; Mozilla Hacks
-            ("http://wired.jp/rssfeeder/") ;; Wired
+            ("https://wired.jp/rssfeeder/") ;; Wired
             ("https://liginc.co.jp/feed") ;; LIG
             ("https://ferret-plus.com/.rss") ;; Ferret
             ("https://news.ycombinator.com/rss") ;; Hacker News
@@ -381,3 +379,13 @@
 
 ;; シンタックスチェック
 (use-package flycheck)
+
+(use-package adoc-mode)
+
+;; テキストブラウザ
+(use-package eww)
+
+;; Pandoc
+(use-package pandoc
+  :init
+  (pandoc-turn-on-advice-eww))
