@@ -41,7 +41,7 @@
       browse-url-generic-program "google-chrome")
 
 ;; フォント設定
-(add-to-list 'default-frame-alist '(font . "Myrica M-12"))
+(add-to-list 'default-frame-alist '(font . "Ricty 12"))
 
 ;; 行間
 (setq line-spacing 3)
@@ -407,7 +407,9 @@
 (use-package undo-tree)
 
 ;; editorconfig対応
-(use-package editorconfig)
+(use-package editorconfig
+  :init
+  (editorconfig-mode 1))
 
 ;; 括弧対応
 (use-package smartparens)
