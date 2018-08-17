@@ -257,6 +257,7 @@
 
 ;; theme (cherry blossom)
 (use-package cherry-blossom-theme)
+;; (use-package solarized-theme)
 
 ;; elfeed
 (use-package elfeed
