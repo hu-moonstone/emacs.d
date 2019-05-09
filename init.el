@@ -8,6 +8,9 @@
         ("melpa" . "http://melpa.org/packages/")
         ("org" . "http://orgmode.org/elpa/")))
 
+(setq editorconfig-get-properties-function
+      'editorconfig-core-get-properties-hash)
+
 ;; straight.elの設定
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -127,14 +130,11 @@
 (global-set-key "\C-x\C-b" 'buffer-menu)
 
 ;; バックタブ
-
-(add-hook 'text-mode-hook
+(add-hook 'css-mode-hook
           '(lambda()
-;             (define-key text-mode-map "\C-i" 'tab-to-tab-stop)
-             (define-key text-mode-map "\C-i" 'tab-to-tab-stop-line-or-region)
-;             (define-key text-mode-map [backtab] 'backtab)
-             (define-key text-mode-map [backtab] 'backtab-line-or-region)
-             (setq tab-stop-list '(2 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128))
+             (define-key text-mode-map (kbd "C-i") 'tab-to-tab-stop-line-or-region)
+             (define-key text-mode-map (kbd "C-x t") 'backtab-line-or-region)
+             (setq tab-stop-list '(4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128))
              (setq indent-tabs-mode nil)))
 
 (defun tab-to-tab-stop-line-or-region ()
@@ -149,7 +149,7 @@
                     (setq deactivate-mark nil))
     (tab-to-tab-stop)))
 
-(defun backtab()
+(defun backtab ()
   "Do reverse indentation"
   (interactive)
   (back-to-indentation)
@@ -202,6 +202,7 @@
     (message "Opening %s..." file)
     (call-process "gnome-open" nil 0 nil file)
     (message "Opening %s done" file)))
+
 
 
 ;; power line
@@ -344,6 +345,12 @@
 
 ;; PHP
 (use-package php-mode)
+(add-hook 'php-mode-hook
+          '(lambda()
+             (setq tab-width 4)
+             (setq indent-tabs-mode t)
+             (setq c-basic-offset 4)))
+;;(add-hook 'php-mode-hook 'php-enable-psr2-coding-style)
 
 ;; JavaScript
 (use-package js2-mode)
@@ -436,6 +443,20 @@
 (use-package pandoc
   :init
   (pandoc-turn-on-advice-eww))
+
+
+;; Swiper
+(use-package swiper
+  :ensure t
+  :config
+  (defun isearch-forward-or-swiper (use-swiper)
+    (interactive "p")
+    (let (current-prefix-arg)
+      (call-interactively (if use-swiper 'swiper 'isearch-forward))))
+  (global-set-key (kbd "C-s") 'isearch-forward-or-swiper))
+
+(use-package ivy
+  :ensure t)
 
 ;; コードフォーマッタ
 ;; (use-package prettier-js
